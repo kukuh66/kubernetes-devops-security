@@ -15,24 +15,26 @@ pipeline {
 			  steps {
 				sh "mvn test"
 			  }
-			  post {
-				always {
-				  junit 'target/surefire-reports/*.xml'
-				  jacoco execPattern: 'target/jacoco.exec'
-				}
-			  }
 		}
 		
 		stage('SonarQube - SAST') {
 		  steps {
 			withSonarQubeEnv('SonarQube') {
-			  sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://34.101.94.171:9000 -Dsonar.login=60cb623c73313fb367038ab04edcde07e7afa163"
+			  sh "mvn sonar:sonar \ 
+			  -Dsonar.projectKey=numeric-application \
+			  -Dsonar.host.url=http://34.101.94.171:9000"
 			}
 			timeout(time: 2, unit: 'MINUTES') {
 			  script {
 				waitForQualityGate abortPipeline: true
 				}
 			}
+		  }
+		}
+		
+		stage('Vulnerability Scan - Docker ') {
+		  steps {
+			sh "mvn dependency-check:check"
 		  }
 		}
 		
@@ -56,4 +58,21 @@ pipeline {
 		}
 		
     }
+	
+	 post {
+		always {
+		  junit 'target/surefire-reports/*.xml'
+		  jacoco execPattern: 'target/jacoco.exec'
+		  dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+		}
+
+		// success {
+
+		// }
+
+		// failure {
+
+		// }
+	}
+	
 }
