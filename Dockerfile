@@ -1,4 +1,3 @@
-# Stage 1: Build stage
 FROM adoptopenjdk/openjdk8:alpine-slim AS build
 WORKDIR /app
 COPY . .
