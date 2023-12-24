@@ -1,7 +1,7 @@
-FROM adoptopenjdk/openjdk8:alpine-slim AS build
+FROM maven:3.8.4-openjdk-8-slim AS build
 WORKDIR /app
 COPY . .
-RUN ./mvnw package
+RUN mvn package
 
 # Stage 2: Run stage
 FROM adoptopenjdk/openjdk8:alpine-slim
