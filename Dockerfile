@@ -1,4 +1,4 @@
-FROM maven:3.8.4-openjdk-8-slim AS build
+FROM maven:3.8.8-eclipse-temurin-8-alpine AS build
 WORKDIR /app
 COPY . .
 RUN mvn package
